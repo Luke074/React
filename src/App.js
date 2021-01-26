@@ -1,25 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css"
+import { useState, Fragment } from "react";
+
+function ToDoList() {
+
+    const [taskList, setTaskList] = useState([
+        {
+            id: 1,
+            description: "Estudar Inlgês",
+        },
+        {
+            id: 2,
+            description: "Jogar LoL",
+        },
+    ]);
+
+    return (
+        <div className="container">
+            <Form />
+            <hr />
+            <List list={taskList} />
+        </div>
+    )
+}
+function Form() {
+
+    return (
+        <form className="form">
+            <input type="text" />
+            <button>OK!</button>
+        </form>
+    )
+}
+function List({ list }) {
+
+    return (
+        <section>
+            {list.map((item) => (
+                <Item task={item} />
+            ))}
+        </section>
+    )
+}
+function Item({task}) {
+
+    return (
+        <article className="item">
+            <p>
+                {task.id} - {task.description}
+            </p>
+            <span>&times;</span>
+        </article>
+    )
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <>
+            <ToDoList />
+        </>
+    );
 }
 
 export default App;
