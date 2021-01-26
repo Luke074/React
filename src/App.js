@@ -3,52 +3,71 @@ import { useState, Fragment } from "react";
 
 function ToDoList() {
 
-    const [taskList, setTaskList] = useState([
-        {
-            id: 1,
-            description: "Estudar Inlgês",
-        },
-        {
-            id: 2,
-            description: "Jogar LoL",
-        },
-    ]);
+    const [taskList, setTaskList] = useState([]);
+
+    const handleInsert = (description) => {
+        const newID = taskList.length === 0 ? 1 : taskList[taskList.length - 1].id + 1;
+
+        const task = {
+            id: newID,
+            description,
+        };
+
+        setTaskList([...taskList, task]);
+    };
+
+    const handleRemove = (id) => {
+        setTaskList(taskList.filter(task => task.id !== id));
+    }
 
     return (
         <div className="container">
-            <Form />
+            <Form insert={handleInsert}/>
             <hr />
-            <List list={taskList} />
+            <List list={taskList} remove={handleRemove}/>
         </div>
     )
 }
-function Form() {
+function Form({ insert }) {
 
+    const [newTask, setNewTask] = useState("");
+    const handleNewTask = (e) => {
+        setNewTask(e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        insert(newTask);
+        setNewTask("");
+    };
+    
     return (
-        <form className="form">
-            <input type="text" />
+        <form className="form" onSubmit={handleSubmit}>
+            <input type="text" value={newTask} onChange={handleNewTask} requiredq/>
             <button>OK!</button>
         </form>
     )
 }
-function List({ list }) {
+function List({ list, remove}) {
 
     return (
         <section>
+            {list.length === 0 && "Você não tem tarefas"}
             {list.map((item) => (
-                <Item task={item} />
+                <Item task={item} remove={remove}/>
             ))}
         </section>
     )
 }
-function Item({task}) {
+function Item({ task, remove }) {
 
     return (
         <article className="item">
             <p>
                 {task.id} - {task.description}
             </p>
-            <span>&times;</span>
+            <span onClick={() => remove(task.id)}>&times;</span>
         </article>
     )
 }
