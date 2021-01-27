@@ -6,6 +6,7 @@
 } */
 .container{
     width: 30%;
+    min-width: 350px;
 }
 
 .form{
@@ -52,4 +53,7 @@
 
     cursor: pointer;
     transition: 0.25;
+}
+.item > span:hover{
+    color: red;
 }

@@ -16,58 +16,89 @@ function ToDoList() {
         setTaskList([...taskList, task]);
     };
 
+    const [inputTask, setInputTask] = useState({ id: "", description: "" });
+
     const handleRemove = (id) => {
         setTaskList(taskList.filter(task => task.id !== id));
-    }
+    };
+
+    const handleEdit = (task) => {
+        setInputTask(task);
+    };
+
+    const handleSaveEdit = () => {
+        setTaskList(taskList.map((task) => (task.id === inputTask.id ? inputTask : task)))
+    };
 
     return (
         <div className="container">
-            <Form insert={handleInsert}/>
+            <Form
+                insert={handleInsert}
+                newTask={inputTask}
+                setNewTask={setInputTask}
+                edit={handleSaveEdit}
+            />
             <hr />
-            <List list={taskList} remove={handleRemove}/>
+            <List
+                list={taskList}
+                remove={handleRemove}
+                edit={handleEdit}
+            />
         </div>
     )
 }
-function Form({ insert }) {
+function Form({ insert, newTask, setNewTask, edit }) {
 
-    const [newTask, setNewTask] = useState("");
     const handleNewTask = (e) => {
-        setNewTask(e.target.value);
+        setNewTask({ ...newTask, description: e.target.value });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        insert(newTask);
-        setNewTask("");
+        if (newTask.id === "") {
+            insert(newTask.description);
+        } else {
+            edit(edit);
+        }
+
+
+        setNewTask({ id: "", description: "" });
     };
-    
+
     return (
         <form className="form" onSubmit={handleSubmit}>
-            <input type="text" value={newTask} onChange={handleNewTask} requiredq/>
+            <input type="text" value={newTask.description} onChange={handleNewTask} required />
             <button>OK!</button>
         </form>
     )
 }
-function List({ list, remove}) {
+function List({ list, remove, edit }) {
 
     return (
         <section>
             {list.length === 0 && "Você não tem tarefas"}
-            {list.map((item) => (
-                <Item task={item} remove={remove}/>
+            {list.map((item, index) => (
+                <Item
+                    key={item.id}
+                    task={item}
+                    index={index}
+                    remove={remove}
+                    edit={edit}
+                />
             ))}
         </section>
     )
 }
-function Item({ task, remove }) {
+function Item({ task, remove, edit, index }) {
 
     return (
         <article className="item">
             <p>
-                {task.id} - {task.description}
+                {index + 1} - {task.description}
             </p>
             <span onClick={() => remove(task.id)}>&times;</span>
+            <span onClick={() => edit(task)}>&#9998;</span>
         </article>
     )
 }
