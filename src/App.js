@@ -1,9 +1,17 @@
 import "./App.css"
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 
 function ToDoList() {
-
     const [taskList, setTaskList] = useState([]);
+
+    const [inputTask, setInputTask] = useState({ id: "", description: "" });
+    
+    window.addEventListener("beforeunload", () => {
+        localStorage.setItem("lista", JSON.stringify(taskList))
+    });
+    useEffect(() => (
+        setTaskList(JSON.parse(localStorage.getItem("lista")))
+    ), []);
 
     const handleInsert = (description) => {
         const newID = taskList.length === 0 ? 1 : taskList[taskList.length - 1].id + 1;
@@ -16,7 +24,6 @@ function ToDoList() {
         setTaskList([...taskList, task]);
     };
 
-    const [inputTask, setInputTask] = useState({ id: "", description: "" });
 
     const handleRemove = (id) => {
         setTaskList(taskList.filter(task => task.id !== id));
